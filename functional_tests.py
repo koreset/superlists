@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from django.template.loader import render_to_string
 
 import unittest
 
@@ -26,8 +25,7 @@ class NewVisitorTest(unittest.TestCase):
 
 		# He is invited to enter a to-do item straight away
 		inputbox = self.browser.find_element_by_id('id_new_item')
-		self.assertEqual(
-			inputbox.get_attribute('placeholder'), 'Enter a to-do item')
+		self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
 		# He enters "Learn TDD the right way" into a text box (Jome's hobby is writing code)
 		inputbox.send_keys('Learn TDD the right way')
@@ -37,7 +35,8 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(any(row.text) == '1: Learn TDD the right way' for row in rows)
+		self.assertTrue(any(row.text == '1: Learn TDD the right way' for row in rows), 
+			 "New to-do item did not appear in the table")
 
 		# There is still a text box inviting her to add another item. He enters
 		# "Setup iMac to complete the course"
@@ -47,7 +46,7 @@ class NewVisitorTest(unittest.TestCase):
 		# Jome wonders if the site will remember his list. Then he sees that the site
 		# has generated a unique URL for him.
 
-		# He visits the URL - hsi to-do list is still there.
+		# He visits the URL - his to-do list is still there.
 
 		# He goes to play FIFA
 		self.fail('Finish the test!')
