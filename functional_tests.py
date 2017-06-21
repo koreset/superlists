@@ -17,9 +17,7 @@ class NewVisitorTest(unittest.TestCase):
 		rows = table.find_elements_by_tag_name('tr')
 		self.assertIn(row_text, [row.text for row in rows])
 
-
 	def test_can_start_a_list_and_retrieve_it_later(self):
-
 
 		# Jome has heard about the latest to-do list app and wants to check it out.
 		self.browser.get('http://localhost:8000')
@@ -39,6 +37,8 @@ class NewVisitorTest(unittest.TestCase):
 		# When he hits Enter, the page updated, and now the page lists
 		# "1: Learn TDD the right way" as an item in the to-do list
 		inputbox.send_keys(Keys.ENTER)
+		self.browser.get('http://localhost:8000')
+
 		self.check_for_row_in_list_table('1: Learn TDD the right way')
 		
 		# There is still a text box inviting her to add another item. He enters
@@ -46,13 +46,10 @@ class NewVisitorTest(unittest.TestCase):
 		inputbox = self.browser.find_element_by_id('id_new_item')
 		inputbox.send_keys('Setup iMac to complete the course')
 		inputbox.send_keys(Keys.ENTER)
-
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
+		self.browser.get('http://localhost:8000')
 
 		self.check_for_row_in_list_table('1: Learn TDD the right way')
 		self.check_for_row_in_list_table('2: Setup iMac to complete the course')
-
 
 		# The page updates again and shows both items on his list
 
