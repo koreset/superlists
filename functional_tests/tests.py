@@ -34,11 +34,11 @@ class NewVisitorTest(LiveServerTestCase):
 
 		# He enters "Learn TDD the right way" into a text box (Jome's hobby is writing code)
 		inputbox.send_keys('Learn TDD the right way')
-		# When he hits Enter, the page updated, and now the page lists
-		# "1: Learn TDD the right way" as an item in the to-do list
+		# When he hits Enter, he is taken to a new url, and now the page 
+		# lists "1: Learn TDD the right way" as an item in the to-do list table
 		inputbox.send_keys(Keys.ENTER)
-
-		self.browser.get(self.live_server_url)
+		jome_list_url = self.browser.current_url
+		self.assertRegex(jome_list_url, '/lists/.+')
 		self.check_for_row_in_list_table('1: Learn TDD the right way')
 		
 		# There is still a text box inviting her to add another item. He enters
@@ -59,7 +59,32 @@ class NewVisitorTest(LiveServerTestCase):
 		# He visits the URL - his to-do list is still there.
 
 		# He goes to play FIFA
-		self.fail('Finish the test!')
+		self.browser.quit()
+
+		self.browser = webdriver.Firefox()
+		
+		# Francis visits the home page. There is no sign of Edith's
+		# list
+		self.browser.get(self.live_server_url)
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('1: Learn TDD the right way', page_text)
+		self.assertNotIn('Setup iMac to complete the course', page_text)
+		# Francis starts a new list by entering a new item. He
+		# is less interesting than Edith...
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Buy milk')
+		inputbox.send_keys(Keys.ENTER)
+		# Francis gets his own unique URL
+		francis_list_url = self.browser.current_url
+		self.assertRegex(francis_list_url, '/lists/.+')
+		self.assertNotEqual(francis_list_url, jome_list_url)
+		# Again, there is no trace of Edith's list
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy peacock feathers', page_text)
+		self.assertIn('Buy milk', page_text)
+		# Satisfied, they both go back to sleep
+		
+		# self.fail('Finish the test!')
 
 
 if __name__ == "__main__":
