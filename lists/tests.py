@@ -24,6 +24,11 @@ class HomePageTest(TestCase):
 		expected_html = render_to_string('home.html', request=request)
 		self.assertEqual(self.remove_csrf(response.content.decode()), self.remove_csrf(expected_html))
 
+	def test_home_page_only_saves_item_when_necessary(self):
+		request = HttpRequest()
+		response = home_page(request)
+		self.assertEqual(Item.objects.count(), 0)
+
 	def test_home_page_can_save_a_POST_request(self):
 		request = HttpRequest()
 		request.method = 'POST'
@@ -31,9 +36,12 @@ class HomePageTest(TestCase):
 
 		response = home_page(request)
 
-		self.assertIn('A new list item', self.remove_csrf(response.content.decode()))
-		expected_html = render_to_string('home.html', {'new_item_text' : 'A new list item'})
-		self.assertEqual(self.remove_csrf(response.content.decode()), self.remove_csrf(expected_html))
+		self.assertEqual(Item.objects.count(), 1)
+		new_item = Item.objects.first()
+		self.assertEqual(new_item.text, "A new list item")
+
+		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response['location'], '/')
 
 class ItemModelTest(TestCase):
 	def test_saving_and_retrieving_items(self):
