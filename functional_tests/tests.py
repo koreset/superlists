@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
-
 import unittest
 import time
 
@@ -38,8 +37,8 @@ class NewVisitorTest(LiveServerTestCase):
 		# When he hits Enter, the page updated, and now the page lists
 		# "1: Learn TDD the right way" as an item in the to-do list
 		inputbox.send_keys(Keys.ENTER)
-		
-		# self.browser.get(self.live_server_url)
+
+		self.browser.get(self.live_server_url)
 		self.check_for_row_in_list_table('1: Learn TDD the right way')
 		
 		# There is still a text box inviting her to add another item. He enters
@@ -48,7 +47,7 @@ class NewVisitorTest(LiveServerTestCase):
 		inputbox.send_keys('Setup iMac to complete the course')
 		inputbox.send_keys(Keys.ENTER)
 
-		# self.browser.get(self.live_server_url)
+		self.browser.get(self.live_server_url)
 		self.check_for_row_in_list_table('1: Learn TDD the right way')
 		self.check_for_row_in_list_table('2: Setup iMac to complete the course')
 
@@ -61,3 +60,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 		# He goes to play FIFA
 		self.fail('Finish the test!')
+
+
+if __name__ == "__main__":
+	unittest.main(warnings='ignore')
